@@ -35,8 +35,8 @@ psnr_test_list = []
 # train_datapath = pathlib.Path(r'D:\UCL_codes\0135\data\DIV2K_train_LR_bicubic')
 # test_datapath = pathlib.Path(r'D:\UCL_codes\0135\data\DIV2K_valid_LR_bicubic')
 
-train_datapath = pathlib.Path.cwd().parent / 'data' / 'DIV2K_train_LR_bicubic'
-test_datapath = pathlib.Path.cwd().parent / 'data' / 'DIV2K_valid_LR_bicubic'
+train_datapath = pathlib.Path.cwd() / 'data' / 'DIV2K_train_LR_bicubic'
+test_datapath = pathlib.Path.cwd() / 'data' / 'DIV2K_valid_LR_bicubic'
 
 pretrained_model_path = pathlib.Path.cwd() / 'RGB_FSRCNN_train_test_04_03_14_37'/ '_epoch_299_lr_tensor(0.0002)_04_03_16_00_30.pth'
 
@@ -55,14 +55,30 @@ logging.basicConfig(format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(leve
                     filemode='a')
 
 def create_csv(path, result_list):
-    # save predict labels of test dataset
+    '''
+        save the records of training
+        Args:
+            path: csv
+            result_list: save path of csv file
+
+        Returns: nothing
+
+        '''
     with open(path, 'w', newline='') as f:
         csv_write = csv.writer(f)
         csv_write.writerow(["origin psnr", "model psnr"])
         csv_write.writerows([i] for i in result_list)
 
 def plot_save(loss_list, acc_list):
-    # plot temporary loss of training and accuracy of test dataset after each epoch training
+    '''
+        plot temporary loss of training and accuracy of test dataset after each epoch training
+        Args:
+            loss_list: list of loss value of each iteration
+            acc_list: list of PSNR value of each epoch
+
+        Returns: nothing
+
+    '''
     x1 = range(len(acc_list))
     x2 = range(len(loss_list))
     y1 = acc_list
@@ -81,14 +97,41 @@ def plot_save(loss_list, acc_list):
     create_csv(model_save_path / 'loss_list.csv', loss_list)
 
 def psnr(img1, img2):
+    '''
+        PSNR calculator, input shape of img1 and img2 must be the same
+        Args:
+            img1: torch.tensor
+            img2: torch.tensor
+
+        Returns: PSNR value in torch.tensor format
+
+    '''
     mse = torch.mean(torch.square(img1 - img2), axis=(1,2,3))
     if torch.any(mse == 0):  # if mse==0 in any image
         return float('inf')
     max_pixel = 1.0  # based on assumption that the max value of pixel is 1
-    psnr = 10 * torch.log10((max_pixel ** 2) / torch.sqrt(mse))
+    psnr = 20 * torch.log10((max_pixel ** 2) / torch.sqrt(mse))
     return psnr
 
 def train(net, teacher, train_iter, test_iter, G_criterion, D_criterion, G_optimizer, D_optimizer, num_epochs): #net, teacher, VGG_feature_model, train_iter, test_iter, loss, G_optimizer, D_optimizer, num_epochs=epoch_num
+    '''
+        training loop, model saving and inference of test data will be implemented after each epoch.
+        For discriminator training, only discriminator will be optimized
+        Args:
+            net: generator network
+            teacher: discriminator network
+            VGG_feature_model: pretrained VGG for perceptual loss calculation
+            train_iter: training dataloder
+            test_iter: test dataloder
+            G_criterion: loss function of generator
+            D_criterion: loss function of discriminator
+            G_optimizer: optimizer function of generator
+            D_optimizer: optimizer function of discriminator
+            num_epochs: number of training epoch
+
+        Returns: nothing
+
+    '''
     net = net.to(device)
     teacher = teacher.to(device)
     # VGG_feature_model = VGG_feature_model.to(device)
@@ -193,6 +236,11 @@ def train(net, teacher, train_iter, test_iter, G_criterion, D_criterion, G_optim
                        time.strftime("%m_%d_%H_%M_%S", time.localtime())) + ".pth"))
 
 def run():
+    '''
+        main fucntion of train 3-channel FSRCNN, generator of SRGAN-FSRCNN
+        Returns:    nothing
+
+    '''
     # main function described in report
     train_dataset = amls_dataset(train_datapath, "training")
     test_dataset = amls_dataset(test_datapath, "test")

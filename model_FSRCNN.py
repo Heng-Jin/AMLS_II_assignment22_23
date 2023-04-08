@@ -4,6 +4,15 @@ import torch.nn as nn
 
 class FSRCNN(torch.nn.Module):
     def __init__(self, num_channels, upscale_factor, d=64, s=12, m=4):
+        '''
+        SRCNN network structure and weight initialization
+        Args:
+            scale_factor: enlargement scale of images, HR size/ LR size
+            num_channels: input images of channels, default channel num is 1, only 'Y' of YCbCr will be loaded
+            d: number of channels in expanding
+            s: number of channels in mapping
+            m: number of mapping blocks
+        '''
         super(FSRCNN, self).__init__()
 
         self.first_part = nn.Sequential(nn.Conv2d(in_channels=num_channels, out_channels=d, kernel_size=5, stride=1, padding=2),

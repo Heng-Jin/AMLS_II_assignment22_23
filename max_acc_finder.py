@@ -2,6 +2,11 @@ import os
 import csv
 from matplotlib import pyplot as plt
 
+'''
+This python script calculate the max PSNR of the epoch in each folder.
+The Curves of PNSR and Loss will be generated and saved in /figure_save_place/
+'''
+
 folder_path = os.getcwd()
 
 img_path = os.path.join(os.getcwd(), 'figure_save_place')
@@ -9,6 +14,15 @@ if not os.path.exists(img_path):
     os.makedirs(img_path)
 
 def plot_save(loss_list, acc_list, plot_save_path):
+    '''
+    plot temporary loss of training and accuracy of test dataset after each epoch training
+    Args:
+        loss_list: list of loss value of each iteration
+        acc_list: list of PSNR value of each epoch
+
+    Returns: nothing
+
+    '''
     # plot temporary loss of training and accuracy of test dataset after each epoch training
     x1 = range(len(acc_list))
     x2 = range(len(loss_list))

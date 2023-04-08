@@ -7,6 +7,11 @@ from PIL import Image
 from dataset_gan import amls_dataset, bbox_padding
 from model import FSRCNN
 
+'''
+This python script generate the images of test data by assigned model
+New images will be saved in the model folder
+'''
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 8
 

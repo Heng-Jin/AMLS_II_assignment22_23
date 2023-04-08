@@ -6,17 +6,26 @@ from torchvision import transforms
 import torchvision.transforms.functional as tf
 from PIL import Image
 
-origin_img = True
+'''
+This python script calculate the PNSR of images save in folder, x_path (Lr images) and y_path (Hr images) are needed
+
+The PSNR will be calculated
+If the model is RGB 3 channel input, please set RGB = True
+If to calculate the PSNR of Bicubic, set origin = True
+'''
+
+
+origin_img = False
 RGB = False
 
-x_path_folder = pathlib.Path.cwd().parent / 'data' / 'DIV2K_valid_LR_bicubic' / 'X8'
+# x_path_folder = pathlib.Path.cwd().parent / 'data' / 'DIV2K_valid_LR_bicubic' / 'X8'
 # x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\RGB_FSRCNN_train_test_04_03_14_37\test_image_inference')
 # x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_01_23_54\test_image_inference')
-# x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\GAN_FSRCNN_train_test_04_03_14_23\test_image_inference')
+x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\GAN_FSRCNN_train_test_04_03_14_23\test_image_inference')
 # x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_02_22_13_residual\test_image_inference')
 # x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\test_image_inference_pretrain_model')
 # x_path_folder = pathlib.Path(r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_02_17_59_pretrain\test_image_inference')
-y_path_folder = pathlib.Path.cwd().parent / 'data' / 'DIV2K_valid_LR_bicubic' / 'X4'
+y_path_folder = pathlib.Path.cwd() / 'data' / 'DIV2K_valid_LR_bicubic' / 'X4'
 
 
 class bbox_padding:

@@ -3,6 +3,9 @@ import torch
 from torch import nn
 
 class ResidualBlock(nn.Module):
+    '''
+    SRResNet Blocks
+    '''
     def __init__(self, channels):
         super(ResidualBlock, self).__init__()
         self.conv1 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
@@ -23,6 +26,9 @@ class ResidualBlock(nn.Module):
         return x + short_cut
 
 class UpsampleBLock(nn.Module):
+    '''
+    last  part of generator
+    '''
     def __init__(self, in_channels, up_scale):
         super(UpsampleBLock, self).__init__()
         self.conv = nn.Conv2d(in_channels, in_channels * up_scale ** 2, kernel_size=3, padding=1)
@@ -36,6 +42,9 @@ class UpsampleBLock(nn.Module):
         return x
 
 class Generator(nn.Module):
+    '''
+    Generator of SRGAN
+    '''
     def __init__(self, scale_factor, num_residual=16):
         upsample_block_num = int(math.log(scale_factor, 2))
 
@@ -71,6 +80,9 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
+    '''
+    Discriminator of SRGAN
+    '''
     def __init__(self):
         super(Discriminator, self).__init__()
         self.net = nn.Sequential(
@@ -118,7 +130,6 @@ class Discriminator(nn.Module):
 if __name__ == "__main__":
     # from torchsummary import summary
 
-    # 需要使用device来指定网络在GPU还是CPU运行
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = Generator(4).to(device)
     # summary(model, input_size=(3,56,56))

@@ -7,9 +7,6 @@ import time
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision import models
-from PIL import Image
 from matplotlib import pyplot as plt
 from dataset_gan import amls_dataset
 from model import FSRCNN, FSRCNN_Residual
@@ -23,8 +20,8 @@ lr = 0.0002
 lr = torch.tensor(lr, requires_grad=False)
 epoch_num = 300
 batch_size = 64
-pretrain = False
-residual = False
+pretrain = False # pretrained model path is needed if True
+residual = False # residual-FSRCNN will be leveraged if True
 
 Loss_list = []
 Accuracy_train_list = []
@@ -33,19 +30,17 @@ psnr_test_list = []
 # train_datapath = pathlib.Path(r'D:\UCL_codes\0135\data\DIV2K_train_LR_bicubic')
 # test_datapath = pathlib.Path(r'D:\UCL_codes\0135\data\DIV2K_valid_LR_bicubic')
 
-train_datapath = pathlib.Path.cwd().parent / 'data' / 'DIV2K_train_LR_bicubic'
-test_datapath = pathlib.Path.cwd().parent / 'data' / 'DIV2K_valid_LR_bicubic'
+train_datapath = pathlib.Path.cwd() / 'data' / 'DIV2K_train_LR_bicubic'
+test_datapath = pathlib.Path.cwd() / 'data' / 'DIV2K_valid_LR_bicubic'
 
 pretrained_model_path = pathlib.Path.cwd() / 'fsrcnn_x2.pth'
 
 parent_path = pathlib.Path.cwd()
 model_save_path = parent_path / ("RGB_FSRCNN_train_test_" + str(time.strftime("%m_%d_%H_%M", time.localtime())))
-model_save_path.mkdir(exist_ok=True)
+model_save_path.mkdir(exist_ok=True)  # all outputs of this running will be saved in this path
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # GPU assigned
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-# device = torch.device('cpu')
 
 log_path = model_save_path / ("FSRCNN_train_test_" + str(time.strftime("%m_%d_%H_%M_%S", time.localtime())) + ".log")
 logging.basicConfig(format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
@@ -54,22 +49,38 @@ logging.basicConfig(format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(leve
                     filemode='a')
 
 def create_csv(path, result_list):
-    # save predict labels of test dataset
+    '''
+    save the records of training
+    Args:
+        path: csv
+        result_list: save path of csv file
+
+    Returns: nothing
+
+    '''
     with open(path, 'w', newline='') as f:
         csv_write = csv.writer(f)
         csv_write.writerow(["origin psnr", "model psnr"])
         csv_write.writerows([i] for i in result_list)
 
 def plot_save(loss_list, acc_list):
-    # plot temporary loss of training and accuracy of test dataset after each epoch training
+    '''
+    plot temporary loss of training and accuracy of test dataset after each epoch training
+    Args:
+        loss_list: list of loss value of each iteration
+        acc_list: list of PSNR value of each epoch
+
+    Returns: nothing
+
+    '''
     x1 = range(len(acc_list))
     x2 = range(len(loss_list))
     y1 = acc_list
     y2 = loss_list
     plt.subplot(2, 1, 1)
     plt.plot(x1, y1, 'o-')
-    plt.title('Test MSE vs. epoches')
-    plt.ylabel('Test MSE')
+    plt.title('Validation PSNR vs. epoches')
+    plt.ylabel('Validation PSNR')
     plt.subplot(2, 1, 2)
     plt.plot(x2, y2, '.-')
     plt.xlabel('Training loss vs. iteration')
@@ -80,14 +91,36 @@ def plot_save(loss_list, acc_list):
     create_csv(model_save_path / 'loss_list.csv', loss_list)
 
 def psnr(img1, img2):
+    '''
+    PSNR calculator, input shape of img1 and img2 must be the same
+    Args:
+        img1: torch.tensor
+        img2: torch.tensor
+
+    Returns: PSNR value in torch.tensor format
+
+    '''
     mse = torch.mean(torch.square(img1 - img2), axis=(1,2,3))
     if torch.any(mse == 0):  # if mse==0 in any image
         return float('inf')
     max_pixel = 1.0  # based on assumption that the max value of pixel is 1
-    psnr = 10 * torch.log10((max_pixel ** 2) / torch.sqrt(mse))
+    psnr = 20 * torch.log10((max_pixel ** 2) / torch.sqrt(mse))
     return psnr
 
 def train(net, train_iter, test_iter, criterion, optimizer, num_epochs):
+    '''
+    training loop, model saving and inference of test data will be implemented after each epoch.
+    Args:
+        net: network to be trained
+        train_iter: training dataloder
+        test_iter: test dataloder
+        criterion: loss function
+        optimizer: torch.optim
+        num_epochs: number of training epoch
+
+    Returns:
+
+    '''
     net = net.to(device)
     logging.info("-----training on %s-----", str(device))
     print("-----training on ", str(device), "-----")
@@ -154,6 +187,11 @@ def train(net, train_iter, test_iter, criterion, optimizer, num_epochs):
                        time.strftime("%m_%d_%H_%M_%S", time.localtime())) + ".pth"))
 
 def run():
+    '''
+    main fucntion of train 3-channel FSRCNN, generator of SRGAN-FSRCNN
+    Returns:  nothing
+
+    '''
     # main function described in report
     train_dataset = amls_dataset(train_datapath, "training")
     test_dataset = amls_dataset(test_datapath, "test")
@@ -172,7 +210,7 @@ def run():
     optimizer = optim.Adam([
         {'params': net.first_part.parameters()},
         {'params': net.mid_part.parameters()},
-        {'params': net.last_part.parameters(), 'lr': lr * 0.1}
+        {'params': net.last_part.parameters(), 'lr': lr * 0.1}  # helping to converge quicker
     ], lr=lr)
 
     loss = torch.nn.MSELoss()

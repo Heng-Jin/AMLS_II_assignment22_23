@@ -11,10 +11,18 @@ import logging
 mean = [0.485, 0.456, 0.406]
 std = [0.229, 0.224, 0.225]
 
-data_augmentation = False
+data_augmentation = False  # data augmentation is leveraged if True
 
 class bbox_padding:
+    '''
+    padding images into square
+    '''
     def __init__(self, img_size):
+        '''
+
+        Args:
+            img_size: image size to be padded to
+        '''
         self.img_size = img_size
 
     def __call__(self, image) -> torch.Tensor:
@@ -66,7 +74,16 @@ transforms_lr = transforms.Compose([
 ])
 
 class amls_dataset(Dataset):
+    '''
+    Dataset for amlsII, this is for RGB 3 channel models
+    '''
     def __init__(self, path, mode):
+        '''
+
+        Args:
+            path: data save path
+            mode: "training", "test", or "inference"
+        '''
         self.mode = mode
         if data_augmentation is True and self.mode == 'training':
             print('--- data agumentation ---')
@@ -112,6 +129,15 @@ class amls_dataset(Dataset):
                     print(f'{x_path} is not satisfy the 2X relationship with {y_path}', width1, height1, width2 / 2, height2 / 2)
 
     def img_aug(self, lr_image, hr_image):
+        '''
+        image data augmentation to make sure the lr images and hr images are transformed by identical operation
+        Args:
+            lr_image: LR image
+            hr_image: HR image
+
+        Returns: LR image and Hr image after transformation
+
+        '''
         angle = random.randint(-180, 180)
         h = random.randint(0, 1)
         v = random.randint(0, 1)
@@ -127,6 +153,14 @@ class amls_dataset(Dataset):
         return lr_image, hr_image
 
     def __getitem__(self, index):
+        '''
+
+        Args:
+            index: number index of data
+
+        Returns: data
+
+        '''
         img_lr = Image.open(self.dataset_list[index][1])
         img_hr = Image.open(self.dataset_list[index][2])
 

@@ -14,14 +14,19 @@ from matplotlib import pyplot as plt
 from dataset import amls_dataset, bbox_padding
 from model import FSRCNN
 
+'''
+This python script generate the images of test data by assigned model
+New images will be saved in the model folder
+'''
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 8
 
 parser = argparse.ArgumentParser(description='AMLS assignment image solver')
 parser.add_argument('--input', type=str, required=False, default=r'D:\UCL_codes\0135\assignment\data\DIV2K_valid_LR_bicubic', help='test image to use')
 # parser.add_argument('--model', type=str, default=r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_01_23_54\_epoch_297_lr_tensor(0.0002)_04_02_00_52_01.pth', help='model file to use')
-#parser.add_argument('--model', type=str, default=r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_02_22_13_residual\_epoch_299_lr_tensor(0.0002)_04_02_23_09_47.pth', help='model file to use')
-#parser.add_argument('--model', type=str, default=r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_02_17_59_pretrain\_epoch_292_lr_tensor(0.0002)_04_02_18_55_30.pth', help='model file to use')
+# parser.add_argument('--model', type=str, default=r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_02_22_13_residual\_epoch_299_lr_tensor(0.0002)_04_02_23_09_47.pth', help='model file to use')
+# parser.add_argument('--model', type=str, default=r'D:\UCL_codes\0135\assignment\test\FSRCNN_train_test_04_02_17_59_pretrain\_epoch_292_lr_tensor(0.0002)_04_02_18_55_30.pth', help='model file to use')
 parser.add_argument('--model', type=str, default=r'D:\UCL_codes\0135\assignment\test\fsrcnn_x2.pth', help='model file to use')
 
 args = parser.parse_args()
