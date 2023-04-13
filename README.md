@@ -45,7 +45,7 @@ Please unzip and put them under the /data/ folder, like the program structure sh
 
 To run the training code of FSRCNN: python train_fsrcnn.py
 
-To generate the HR images, please run : python img_solver.py --input image_path --model model_path
+To generate the HR images, please run : python img_solver.py --input lr_image_path --model model_path
 
 ### Program structure
 -- AMLS_II_assignment22_23 
@@ -97,7 +97,7 @@ FSRCNN, FSRCNN with skip connection, and discriminator of SRGAN.
 
 &emsp; model.py : model of FSRCNN, Residual-FSRCNN, RGB 3 channel FSRCNN
 
-&emsp; srgan.py : model of discriminator of SRGAN-FSRCNN, SRRenNet
+&emsp; srgan.py : model of discriminator of SRGAN-FSRCNN, SRResNet
 
 The dataset.py defines the Class Dataset to serve LR im-ages and HR images for each 
 iteration of model training and inference. For basic FSRCNN, images are converted to 
