@@ -108,5 +108,29 @@ the design of FSRCNN. For RGB 3-channel FSRCNN, tensors with all 3 channels will
 
 &emsp; dataset_gan.py : Y channel for RGB 3 channel input models
 
+### Image result
+
+[//]: # (<img src="D:\UCL_codes\0135\git_submission\AMLS_II_assignment22_23\image results\Origin.png" height="135"/>)
+
+[//]: # (<img src="D:\UCL_codes\0135\git_submission\AMLS_II_assignment22_23\image results\FSRCNN.png" height="135">)
+
+[//]: # (<img src="D:\UCL_codes\0135\git_submission\AMLS_II_assignment22_23\image results\Pretrained_FSRCNN.png" height="135">)
+
+[//]: # (<img src="D:\UCL_codes\0135\git_submission\AMLS_II_assignment22_23\image results\Residual-FSRCNN.png" height="135"/>)
+
+[//]: # (<img src="D:\UCL_codes\0135\git_submission\AMLS_II_assignment22_23\image results\RGB 3channel FSRCNN.png" height="135"/>)
+
+[//]: # (<img src="D:\UCL_codes\0135\git_submission\AMLS_II_assignment22_23\image results\SRGAN-FSRCNN.png" height="135"/>)
+
+
+<img src="https://github.com/Heng-Jin/AMLS_II_assignment22_23/blob/main/image%20results/Origin.png" height="135"/>
+<img src="https://github.com/Heng-Jin/AMLS_II_assignment22_23/blob/main/image%20results/FSRCNN.png" height="135"/>
+<img src="https://github.com/Heng-Jin/AMLS_II_assignment22_23/blob/main/image%20results/Pretrained_FSRCNN.png" height="135"/>
+<img src="https://github.com/Heng-Jin/AMLS_II_assignment22_23/blob/main/image%20results/Residual-FSRCNN.png" height="135"/>
+<img src="https://github.com/Heng-Jin/AMLS_II_assignment22_23/blob/main/image%20results/RGB%203channel%20FSRCNN.png" height="135"/>
+<img src="https://github.com/Heng-Jin/AMLS_II_assignment22_23/blob/main/image%20results/SRGAN-FSRCNN.png" width="180" height="135"/>
+
+&emsp; Origin Image &emsp; FSRCNN result &emsp; Pretrained FSRCNN &emsp; Residual-FSRCNN &emsp; RGB 3channel FSRCNN &emsp; SRGAN-FSRCNN 
+
 
 
